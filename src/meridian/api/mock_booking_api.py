@@ -1,4 +1,4 @@
-"""Mock Booking API implementing the Booking API spec (docs/booking_api_spec.md).
+"""Mock Booking API implementing 12_booking_api_spec.pdf.
 
 POST /v1/bookings, GET /v1/bookings/{id}, PATCH /v1/bookings/{id}. In-memory store seeded
 with the booking IDs referenced in the example messages. ZIP coverage is validated against
@@ -19,6 +19,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field, field_validator
 
 from meridian.config import get_settings
+from meridian.domain import Channel, CancelReason, JobType, ServiceType, Window
 from meridian.knowledge.service_area import get_service_area_index
 
 
@@ -29,11 +30,6 @@ async def lifespan(app: "FastAPI"):
 
 
 app = FastAPI(title="Meridian Booking API (mock)", version="1.0", lifespan=lifespan)
-
-ServiceType = Literal["hvac", "plumbing", "electrical"]
-JobType = Literal["diagnostic", "repair", "install", "tune_up", "warranty_return", "estimate"]
-Window = Literal["morning", "midday", "afternoon", "first_available"]
-Channel = Literal["ivr", "web_chat", "email", "agent"]
 
 WINDOWS: dict[str, tuple[str, str]] = {
     "morning": ("07:00", "11:00"),
@@ -129,9 +125,7 @@ class PatchBooking(BaseModel):
     action: Literal["reschedule", "cancel", "update_notes"]
     new_date: Optional[str] = None
     new_window: Optional[Window] = None
-    cancel_reason: Optional[
-        Literal["customer_request", "tech_unavailable", "weather", "duplicate", "other"]
-    ] = None
+    cancel_reason: Optional[CancelReason] = None
     notes: Optional[str] = Field(default=None, max_length=500)
 
 

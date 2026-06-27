@@ -17,6 +17,7 @@ import streamlit as st
 from meridian import booking_client
 from meridian.agent.graph import Assistant
 from meridian.config import get_settings
+from meridian.domain import CHANNELS
 
 # Streamlit's hot-reload watcher walks every imported module after each run. The
 # `transformers` package (pulled in by the sentence-transformers reranker) lazily
@@ -117,7 +118,8 @@ def main() -> None:
     with st.sidebar:
         st.header("Meridian Assistant")
         st.caption("Grounded RAG + agentic booking demo")
-        channel = st.selectbox("Channel", ["web_chat", "ivr", "email", "agent"], index=0)
+        channel = st.selectbox("Channel", list(CHANNELS),
+                               index=list(CHANNELS).index("web_chat"))
         st.divider()
         try:
             h = booking_client.health()

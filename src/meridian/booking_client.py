@@ -65,11 +65,6 @@ def cancel_booking(booking_id: str, cancel_reason: str = "customer_request") -> 
                     json={"action": "cancel", "cancel_reason": cancel_reason})
 
 
-def update_notes(booking_id: str, notes: str) -> dict:
-    return _request("PATCH", f"/bookings/{booking_id}",
-                    json={"action": "update_notes", "notes": notes})
-
-
 def reset() -> dict:
     """Re-seed the mock API (no-op-safe; used by the eval harness)."""
     return _request("POST", "/admin/reset")

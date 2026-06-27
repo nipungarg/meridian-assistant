@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 from meridian.agent.llm import get_chat_llm
 from meridian.agent.prompts import ROUTER_SYSTEM
 from meridian.config import get_settings
+from meridian.domain import CancelReason, JobType, ServiceType, Window
 
 Intent = Literal[
     "faq_policy", "service_area", "booking_create", "booking_reschedule",
@@ -27,15 +28,13 @@ class RouterDecision(BaseModel):
     intent: Intent
     handoff_reason: Optional[HandoffReason] = None
     zip_code: Optional[str] = None
-    service_type: Optional[Literal["hvac", "plumbing", "electrical"]] = None
-    job_type: Optional[Literal[
-        "diagnostic", "repair", "install", "tune_up", "warranty_return", "estimate"]] = None
+    service_type: Optional[ServiceType] = None
+    job_type: Optional[JobType] = None
     preferred_date: Optional[str] = None
-    preferred_window: Optional[Literal["morning", "midday", "afternoon", "first_available"]] = None
+    preferred_window: Optional[Window] = None
     preferred_tech: Optional[str] = None
     booking_id: Optional[str] = None
-    cancel_reason: Optional[Literal[
-        "customer_request", "tech_unavailable", "weather", "duplicate", "other"]] = None
+    cancel_reason: Optional[CancelReason] = None
     customer_name: Optional[str] = None
     customer_phone: Optional[str] = None
     customer_email: Optional[str] = None

@@ -489,7 +489,3 @@ class Assistant:
             {"messages": [HumanMessage(content=text)], "channel": channel}, config=config
         )
         return result
-
-    def reset(self, thread_id: str = "default") -> None:
-        # MemorySaver keeps state in-process; a fresh thread_id starts a new conversation.
-        pass

@@ -40,7 +40,6 @@ class ExtractedDoc:
     version: str
     updated_date: str
     cleaned_text: str
-    pages: list[str] = field(default_factory=list)
     tables: list[list[list[str]]] = field(default_factory=list)
 
     @property
@@ -159,7 +158,6 @@ def extract_pdf(path: str | Path) -> ExtractedDoc:
         version=header["version"],
         updated_date=header["updated"],
         cleaned_text=cleaned,
-        pages=pages,
         tables=tables,
     )
 

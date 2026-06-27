@@ -26,7 +26,6 @@ class RetrievedChunk:
 
 @dataclass
 class RetrievalResult:
-    query: str
     chunks: list[RetrievedChunk] = field(default_factory=list)
     used_reranker: str = "none"
     confidence: float = 0.0  # best embedding similarity among candidates (the gating signal)
@@ -91,7 +90,7 @@ class Retriever:
             sim = max(0.0, 1.0 - float(dist))  # cosine distance -> similarity
             candidates.append(RetrievedChunk(text=doc, metadata=meta, score=sim, similarity=sim))
         if not candidates:
-            return RetrievalResult(query=query, chunks=[], used_reranker="none")
+            return RetrievalResult(chunks=[], used_reranker="none")
 
         mode = s.reranker
         if mode == "cross_encoder":
@@ -107,7 +106,7 @@ class Retriever:
             c.score = round(0.5 * float(rk) + 0.5 * c.similarity, 4) if used != "none" else c.similarity
         candidates.sort(key=lambda c: c.score, reverse=True)
         confidence = max((c.similarity for c in candidates), default=0.0)
-        return RetrievalResult(query=query, chunks=candidates[:top_n], used_reranker=used,
+        return RetrievalResult(chunks=candidates[:top_n], used_reranker=used,
                                confidence=round(confidence, 4))
 
     def _rerank_cross_encoder(self, query, candidates) -> tuple[list[float], str]:

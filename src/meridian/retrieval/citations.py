@@ -41,7 +41,3 @@ def format_context(chunks: list) -> str:
         header = f"[{i}] {m.get('breadcrumb', m.get('doc_title', ''))} (source: {m.get('source_file','')})"
         blocks.append(f"{header}\n{ch.text}")
     return "\n\n".join(blocks)
-
-
-def format_sources(chunks: list) -> list[str]:
-    return [c.label() for c in build_citations(chunks)]

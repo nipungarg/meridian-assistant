@@ -15,7 +15,8 @@ from pydantic import BaseModel, Field
 from meridian.agent.llm import get_chat_llm
 from meridian.agent.prompts import GROUNDED_SYSTEM
 from meridian.config import get_settings
-from meridian.retrieval.citations import build_citations, format_context, format_sources
+from meridian.domain import CHANNELS
+from meridian.retrieval.citations import build_citations, format_context
 from meridian.retrieval.retriever import get_retriever
 
 WINDOW_LABEL = {
@@ -116,7 +117,7 @@ def rag_answer(query: str) -> dict:
         **base,
         "answerable": True,
         "answer": ga.answer.strip(),
-        "citations": format_sources(used_chunks),
+        "citations": [c.label() for c in cites],
         "sources_detail": [asdict(c) for c in cites],
     }
 
@@ -167,7 +168,7 @@ def build_create_payload(slots: dict, channel: str) -> dict:
         "zip_code": slots.get("zip_code"),
         "preferred_date": slots.get("preferred_date"),
         "preferred_window": slots.get("preferred_window"),
-        "channel": channel if channel in {"ivr", "web_chat", "email", "agent"} else "web_chat",
+        "channel": channel if channel in CHANNELS else "web_chat",
     }
     if slots.get("preferred_tech"):
         payload["preferred_tech"] = slots["preferred_tech"]

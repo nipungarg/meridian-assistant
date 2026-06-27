@@ -9,12 +9,13 @@ import argparse
 import uuid
 
 from meridian.agent.graph import Assistant
+from meridian.domain import CHANNELS
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Chat with the Meridian assistant.")
     parser.add_argument("--channel", default="web_chat",
-                        choices=["ivr", "web_chat", "email", "agent"])
+                        choices=list(CHANNELS))
     parser.add_argument("--debug", action="store_true", help="show the agent's per-turn trace")
     args = parser.parse_args()
 

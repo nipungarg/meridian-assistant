@@ -15,9 +15,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from meridian.config import get_settings
+from meridian.domain import SERVICE_TYPES
 from meridian.ingestion.pdf_extract import ExtractedDoc, extract_pdf, normalize_coverage_cell
 
-SERVICE_TYPES = ("hvac", "plumbing", "electrical")
 _SERVICE_FILES = ("01_service_area_north.pdf", "02_service_area_central.pdf")
 _DASH_RE = re.compile(r"[\u2013\u2014\-]")
 _ZIP_RE = re.compile(r"\b\d{5}\b")

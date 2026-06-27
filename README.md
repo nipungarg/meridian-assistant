@@ -1,31 +1,28 @@
-# Meridian Home Services - AI Contact-Center Assistant (prototype)
+# Meridian Home Services - AI Contact-Center Assistant
 
-A grounded, agentic assistant for a mid-market home-services company. It answers policy/FAQ
-questions strictly from the provided knowledge pack (with citations), checks ZIP service-area
-eligibility, books/reschedules/cancels visits against a mock Booking API (with input validation
-and an explicit confirmation step), and cleanly hands off to a human when confidence is low, the
-request is out of scope, or required info is missing.
+A prototype assistant for a mid-market home-services company's contact center. It answers policy
+and FAQ questions from the company's knowledge pack (and cites them), checks whether a ZIP falls in
+the service area, books, reschedules, and cancels visits through a mock Booking API, and pulls in a
+human when it isn't confident, the request is out of scope, or it's missing something it needs.
 
-Built from scratch with **LangGraph + LangChain**, **OpenAI** models, **Chroma** + a local
-**cross-encoder** reranker, a **FastAPI** mock Booking API, a **Streamlit** chat UI, and a
-**custom + RAGAS** evaluation harness.
+Under the hood it uses LangGraph and LangChain with OpenAI models, Chroma for vector search, a local
+cross-encoder for reranking, a FastAPI service standing in for the real Booking API, a Streamlit chat
+UI, and an evaluation harness built from custom checks plus RAGAS.
 
----
+## What it does
 
-## What it can do
-
-- **Grounded answering** over the 11 knowledge docs (hours, pricing, warranty, cancellation,
-  payments, emergencies, booking FAQ) with **inline source citations** and a hard "answer only
-  from context" guardrail.
-- **Service-area eligibility**: deterministic ZIP -> (covered / sub-contracted / pending /
-  not-covered / out-of-area) lookups parsed from the coverage grids.
-- **Agentic booking flow**: collect + validate fields, check eligibility, **confirm before
-  committing**, then call `POST` / `PATCH /bookings`; plus status and ETA lookups via `GET`.
-- **Safe human-handoff** with a structured package (reason, recommended route, collected info,
-  transcript) for emergencies, fee disputes, complaints, commercial accounts, out-of-area ZIPs,
-  out-of-scope questions, low confidence, and API errors.
-
----
+- Answers questions about hours, pricing, warranty, cancellations, payments, emergencies, and
+  booking, using only the 11 knowledge documents and citing what it used. If the docs don't cover
+  something, it says so instead of guessing.
+- Checks whether a ZIP is in the service area. That lookup is deterministic and returns one of
+  covered, sub-contracted, pending, not-covered, or out-of-area, read straight from the coverage
+  grids.
+- Books, reschedules, and cancels visits. It collects and validates the fields it needs, checks
+  eligibility, confirms with the customer before writing anything, then calls `POST`/`PATCH /bookings`.
+  Status and ETA come back from `GET /bookings`.
+- Hands off to a human when it should. Emergencies, fee disputes, complaints, commercial accounts,
+  out-of-area ZIPs, out-of-scope questions, low confidence, or an API error each produce a structured
+  handoff package: the reason, a suggested route, the info gathered so far, and the transcript.
 
 ## Architecture
 
@@ -50,22 +47,23 @@ flowchart TD
     Handoff --> Done
 ```
 
-Two ideas do the heavy lifting:
+A couple of decisions shape everything else.
 
-1. **Structured data is handled deterministically, not by the LLM.** ZIP ranges
-   (`22030-22039`), the 60-day window, and cancellation fees are parsed/enforced in code. RAG is
-   used only for natural-language policy text. This is what makes eligibility and fees trustworthy.
-2. **Confidence is gated on embedding similarity, ordering on the cross-encoder.** The cross-
-   encoder (ms-marco MiniLM) is great for *ordering* but its absolute scores are poorly calibrated
-   (it scored a correct chunk 0.03 on one phrasing and 0.99 on another). Embedding cosine cleanly
-   separates relevant (~0.38-0.69) from out-of-scope (~0.07-0.13), so the low-confidence handoff
-   gate uses that, while the final ranking blends both signals.
+The first is that structured data never goes through the model. ZIP ranges like `22030-22039`, the
+60-day booking window, and the cancellation-fee schedule are parsed and enforced in code; the LLM
+only ever sees free-form policy text. That's the part that makes eligibility and fee answers
+something you can actually trust.
 
----
+The second is that "is this relevant enough to answer?" and "which chunk is best?" are answered by
+different signals. The ms-marco MiniLM cross-encoder ranks candidates well, but its absolute scores
+aren't calibrated at all. On one run it scored the same correct chunk 0.03 for one phrasing and 0.99
+for another. Embedding cosine similarity, by contrast, cleanly separates relevant chunks (roughly
+0.38-0.69) from out-of-scope ones (roughly 0.07-0.13). So the low-confidence handoff gate keys off
+cosine similarity, and the final ordering blends the cross-encoder score with it.
 
 ## Quickstart
 
-Prerequisites: Python 3.10+ and the `OPENAI_API_KEY` already present in `.env`.
+You'll need Python 3.10+ and an `OPENAI_API_KEY` in `.env`.
 
 ```bash
 # 1. Install (creates .venv and installs the package + deps)
@@ -91,65 +89,59 @@ make eval-quick         # skips RAGAS (faster)
 make test
 ```
 
-Configuration lives in `.env` (see `.env.example`): chat/embedding models, reranker choice,
-retrieval `top_k`/`top_n`, the confidence floor, the Booking API URL/token, and `DEMO_DATE`
-(set this to e.g. `2026-01-20` to make date-relative demos reproducible).
+Everything configurable lives in `.env` (copy `.env.example` to start): the chat and embedding
+models, the reranker choice, retrieval `top_k`/`top_n`, the confidence floor, the Booking API URL and
+token, and `DEMO_DATE`. Set `DEMO_DATE` (e.g. `2026-01-20`) when you want date-relative demos to be
+reproducible.
 
-The first retrieval call downloads the ~90 MB cross-encoder from Hugging Face (free, no token)
-and caches it. Set `RERANKER=llm` to rerank with OpenAI instead, or `RERANKER=none` to skip it.
+The first retrieval call downloads the cross-encoder (about 90 MB) from Hugging Face and caches it;
+it's free and needs no token. If you'd rather not run it, set `RERANKER=llm` to rerank with OpenAI or
+`RERANKER=none` to skip reranking entirely.
 
----
+## Design decisions
 
-## Key design decisions (and why)
-
-- **LangGraph** for orchestration. The task is an explicit, auditable, multi-step flow with intent
-  routing, tool calls, a mandatory confirm-before-write gate, and a handoff branch. A state graph
-  models this far more safely than a free-form ReAct loop. Conversation state persists across
-  turns via a checkpointer, which is how slot-filling and confirmation work. (I implemented the
-  confirmation gate as explicit persisted state rather than LangGraph's `interrupt()` for
-  robustness across the UI, CLI, and eval harness - the requirement is "confirm before commit",
-  which this satisfies.)
-- **pdfplumber** for extraction. Pure-Python, strong table support. The coverage grids use a
-  symbol font where a check renders as the glyph `3` and a cross as `7`; `normalize_coverage_cell`
-  maps these (and `Sub-contracted` / `Pending`) and is unit-tested against known rows.
-- **Per-document chunking.** One chunk per FAQ Q&A, per branch's hours, per county's coverage,
-  per pricing section - so a single retrieved chunk usually fully answers a question. 60 chunks
-  total. Each carries `source_file / doc_title / section / version` for citations.
-- **Chroma** (local, persistent, free) with **OpenAI `text-embedding-3-large`**. Cosine space.
-- **Cross-encoder rerank** (`cross-encoder/ms-marco-MiniLM-L-6-v2`, local/free) for ordering,
-  with embedding-similarity confidence gating (see Architecture).
-- **OpenAI `gpt-4.1`** at `temperature=0` for the router (structured output), grounded answering,
-  and the eval judge. Chosen over the `gpt-5.x` family because grounded answering wants
-  deterministic `temperature=0` and rock-solid tool/structured-output support; swappable via
-  `OPENAI_CHAT_MODEL`.
-- **Mock Booking API as a real FastAPI service** (not in-process) so the agent makes genuine HTTP
-  calls; swapping in the real internal API is a one-line base-URL change.
-
----
+- **LangGraph for orchestration.** This is an explicit, auditable, multi-step flow: route the intent,
+  call tools, force a confirmation before any write, and branch off to a handoff. A state graph fits
+  that much better than a free-form ReAct loop. State persists between turns through a checkpointer,
+  which is what makes slot-filling and confirmation work across messages. I kept the confirmation gate
+  as explicit persisted state rather than LangGraph's `interrupt()` so it behaves identically in the
+  UI, the CLI, and the eval harness.
+- **pdfplumber for extraction.** Pure Python and good with tables. The coverage grids use a symbol
+  font where a check comes through as the glyph `3` and a cross as `7`, so `normalize_coverage_cell`
+  maps those (along with `Sub-contracted` / `Pending`) and is unit-tested against known rows.
+- **Per-document chunking.** One chunk per FAQ answer, per branch's hours, per county's coverage, and
+  per pricing section, so a single retrieved chunk usually answers the whole question. That comes to
+  about 60 chunks, each tagged with `source_file`, `doc_title`, `section`, and `version` for citations.
+- **Chroma with `text-embedding-3-large`.** Local, persistent, free, cosine space.
+- **Cross-encoder reranking** (`cross-encoder/ms-marco-MiniLM-L-6-v2`, local and free) for ordering,
+  with the cosine-similarity confidence gate described above.
+- **`gpt-4.1` at `temperature=0`** for routing (structured output), grounded answering, and the eval
+  judge. I chose it over the gpt-5.x models because grounded answering wants deterministic output and
+  solid tool/structured-output support. It's swappable through `OPENAI_CHAT_MODEL`.
+- **The mock Booking API is a real FastAPI service**, not an in-process stub, so the agent makes
+  genuine HTTP calls. Pointing it at the real internal API would be a one-line base-URL change.
 
 ## Grounding and guardrails
 
-- The answer prompt forbids outside knowledge; if the sources do not support an answer the model
-  returns `answerable=false` and the agent hands off instead of guessing.
-- A **low-confidence handoff** fires when the top embedding similarity is below
-  `MIN_RETRIEVAL_SCORE` (0.25).
-- **Sensitive intents never reach the answerer**: a deterministic, high-precision keyword overlay
-  catches active emergencies (so safety never depends solely on the LLM) and backs up the router
-  on fee disputes / complaints / commercial; these route straight to handoff.
-- **No write without confirmation**: `POST` / `PATCH` only run in the `confirm` node after an
-  explicit "yes". This is asserted in the eval ("confirm-before-commit").
-- Eligibility, fees, and the 60-day window are deterministic; the Booking API validates again
-  (defense in depth) and returns 4xx on bad input.
-
----
+- The answering prompt is limited to the retrieved sources. If they don't support an answer, the model
+  returns `answerable=false` and the agent hands off rather than improvising.
+- A low-confidence handoff fires when the top embedding similarity drops below `MIN_RETRIEVAL_SCORE`
+  (0.25).
+- Sensitive messages never reach the answerer. A small, high-precision keyword check catches active
+  emergencies (so safety doesn't rest on the LLM alone) and backs up the router on fee disputes,
+  complaints, and commercial requests; all of those go straight to a handoff.
+- Nothing is written without a "yes". `POST`/`PATCH` only run in the `confirm` node after an explicit
+  confirmation, and the eval asserts this ("confirm-before-commit").
+- Eligibility, fees, and the 60-day window are computed in code, and the Booking API validates the
+  request again and returns a 4xx on bad input.
 
 ## Evaluation
 
-`eval/testset.yaml` has 34 cases seeded from the 20 example messages and extended with FAQ
+`eval/testset.yaml` holds 34 cases, seeded from the 20 example messages and extended with FAQ
 variants, more ZIPs, booking edge cases, and out-of-scope probes. `eval/run_eval.py` scores four
-dimensions and writes `eval/results/report.md` + `report.json`.
+dimensions and writes `eval/results/report.md` and `report.json`.
 
-**Latest results** (`gpt-4.1`, `text-embedding-3-large`, cross-encoder):
+Latest results (`gpt-4.1`, `text-embedding-3-large`, cross-encoder):
 
 | Dimension | Result |
 |---|---|
@@ -161,17 +153,16 @@ dimensions and writes `eval/results/report.md` + `report.json`.
 | Handoff routing | **100% (34/34)** |
 | RAGAS | faithfulness **0.93**, answer relevancy **0.75**, context precision **0.98**, context recall **0.97** |
 
-Notes: the LLM judge is mildly non-deterministic even at `temperature=0` (it occasionally marks a
-correct answer wrong); keyword assertions + RAGAS faithfulness are the stricter signals. RAGAS
-answer-relevancy (~0.75) is expected since our answers are deliberately terse.
-
----
+Two caveats. The LLM judge is mildly non-deterministic even at `temperature=0` and occasionally marks
+a correct answer wrong, so the keyword assertions and RAGAS faithfulness are the stricter signals. The
+RAGAS answer-relevancy score (~0.75) is expected, since the answers are deliberately terse.
 
 ## Repository layout
 
 ```
 src/meridian/
   config.py                 # env-driven settings (models, thresholds, API url, demo clock)
+  domain.py                 # shared enums (service / job / window / channel / cancel-reason)
   ingestion/                # pdf_extract.py, chunkers.py, build_index.py
   knowledge/service_area.py # deterministic ZIP -> coverage index (+ chunks)
   retrieval/                # retriever.py (Chroma + rerank + confidence), citations.py
@@ -183,48 +174,47 @@ src/meridian/
 eval/                       # testset.yaml, run_eval.py, results/
 tests/                      # extraction, service-area, booking-API + fee logic
 files/                      # the provided knowledge pack (PDFs)
-docs/                       # PATH_TO_PRODUCTION.md, booking_api_spec.md (maintained API spec)
 ```
-
----
 
 ## Assumptions
 
-- OpenAI usage is unconstrained (per the brief); everything else is free / local (Chroma,
-  pdfplumber, the MiniLM cross-encoder via free HF download, FastAPI, Streamlit, RAGAS).
+- OpenAI usage is unconstrained (per the brief); everything else is free and local (Chroma,
+  pdfplumber, the MiniLM cross-encoder via a free Hugging Face download, FastAPI, Streamlit, RAGAS).
 - The Booking API is fictional, so a local mock stands in for it, seeded with the booking IDs the
   example messages reference (`BK-00391042`, `BK-00483921`, `BK-00512883`).
 - "Today" defaults to the system date; set `DEMO_DATE` for reproducible date-relative demos.
-- A new booking needs a name + phone (or a `customer_id`); the demo does not authenticate users.
+- A new booking needs a name and phone (or a `customer_id`); the demo doesn't authenticate users.
 
-## Data-quality findings (surfaced, not hidden)
+## Data quirks worth knowing
 
-- **Coverage grids use a symbol font** (check = `3`, cross = `7`); mishandling this silently
-  inverts eligibility. Handled and unit-tested.
-- **No South-region service-area doc exists**, although 5 South branches appear in the hours doc.
-  South ZIPs are therefore unverifiable from the pack and correctly resolve to out-of-area /
-  Branch-Manager handoff (we do not fabricate coverage).
-- **ZIP 22046 (Falls Church) is used as a bookable address in example message #3 but is not listed
-  in the North coverage doc** (Fairfax is `22030-22039, 22041-22044`). The assistant strictly
-  follows the doc and flags it for spot-approval; this is captured as eval case
-  `booking_create_22046_discrepancy`.
+- The coverage grids use a symbol font (check = `3`, cross = `7`). Get that wrong and eligibility
+  silently inverts, so it's handled explicitly and unit-tested.
+- There's no South-region service-area document, even though five South branches appear in the hours
+  doc. South ZIPs therefore can't be verified from the pack, and they correctly resolve to
+  out-of-area / Branch-Manager handoff rather than a made-up answer.
+- ZIP 22046 (Falls Church) is used as a bookable address in example message #3, but it isn't listed in
+  the North coverage doc (Fairfax is `22030-22039, 22041-22044`). The assistant follows the doc and
+  flags it for spot-approval; this is pinned down by the `booking_create_22046_discrepancy` eval case.
 
-## Debugging methodology
+## How I built and debugged it
 
-Built bottom-up with a verification gate at each layer before moving on:
-1. Dumped raw pdfplumber output first to *see* how glyphs/tables actually extract (this revealed
-   the `3`/`7` symbol fonts and the merged company/type header line) rather than guessing.
-2. Validated the deterministic ZIP index against hand-checked rows before indexing anything.
-3. Smoke-tested retrieval and the full agent on representative prompts; used the eval harness as a
-   regression net. The eval immediately caught (a) emergency false-positives from loose keywords
-   ("flood", "emergency" in FAQ questions), (b) the cross-encoder mis-calibration causing false
-   low-confidence handoffs, and (c) a notes-filter regression that dropped the EcoPower referral -
-   each fixed and re-run to green.
+I worked bottom-up and verified each layer before moving on.
 
-## Deliberately left out
+1. First I dumped raw pdfplumber output to see how the glyphs and tables actually came through. That's
+   how I found the `3`/`7` symbol fonts and the merged company/type header line, instead of guessing
+   at them later.
+2. I validated the deterministic ZIP index against rows I'd checked by hand before indexing anything.
+3. Then I smoke-tested retrieval and the full agent on representative prompts and leaned on the eval
+   harness as a regression net. It caught a few things quickly: emergency false-positives from loose
+   keywords ("flood" and "emergency" turning up in FAQ questions), the cross-encoder miscalibration
+   causing false low-confidence handoffs, and a notes-filter regression that dropped the EcoPower
+   referral. Each got fixed and re-run to green.
 
-- Real telephony/email ingestion (text prototype with a `channel` field), user auth/accounts, a
-  persistent DB (the mock store is in-memory), streaming responses, fine-tuning, multi-language,
-  and per-branch policy variants (discussed in `docs/PATH_TO_PRODUCTION.md`).
+## Not included
 
-See `docs/PATH_TO_PRODUCTION.md` for hardening, monitoring, and scaling to all 11 branches.
+- Real telephony or email ingestion (this is a text prototype with a `channel` field), user accounts
+  and auth, a persistent database (the mock store is in memory), streaming responses, fine-tuning,
+  multiple languages, and per-branch policy variants.
+- A client wrapper for the Booking API's `update_notes` action and a no-op `Assistant.reset`. The mock
+  API still supports `update_notes`, but nothing in the agent needs to edit notes, and a fresh
+  conversation just uses a new `thread_id`, so I dropped both rather than leave them as dead surface.
