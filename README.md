@@ -178,10 +178,8 @@ files/                      # the provided knowledge pack (PDFs)
 
 ## Assumptions
 
-- OpenAI usage is unconstrained (per the brief); everything else is free and local (Chroma,
-  pdfplumber, the MiniLM cross-encoder via a free Hugging Face download, FastAPI, Streamlit, RAGAS).
-- The Booking API is fictional, so a local mock stands in for it, seeded with the booking IDs the
-  example messages reference (`BK-00391042`, `BK-00483921`, `BK-00512883`).
+- OpenAI usage is paid; everything else is free and local (Chroma, pdfplumber, the MiniLM cross-encoder via a free Hugging Face download, FastAPI, Streamlit, RAGAS).
+- The Booking API is fictional, so a local mock stands in for it, seeded with the booking IDs the example messages reference (`BK-00391042`, `BK-00483921`, `BK-00512883`).
 - "Today" defaults to the system date; set `DEMO_DATE` for reproducible date-relative demos.
 - A new booking needs a name and phone (or a `customer_id`); the demo doesn't authenticate users.
 
