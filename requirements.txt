@@ -1,0 +1,34 @@
+# ---- Core LLM / orchestration ----
+openai>=1.40
+langchain-core>=0.3
+langchain-openai>=0.2
+langgraph>=0.2
+
+# ---- Vector store + retrieval ----
+chromadb>=0.5
+sentence-transformers>=3.0      # local cross-encoder reranker (BAAI/bge-reranker-base)
+
+# ---- PDF extraction ----
+pdfplumber>=0.11
+
+# ---- Mock Booking API + HTTP client ----
+fastapi>=0.115
+uvicorn[standard]>=0.30
+httpx>=0.27
+
+# ---- Demo UI ----
+streamlit>=1.38
+
+# ---- Evaluation ----
+ragas>=0.2
+datasets>=3.0
+
+# ---- Utilities ----
+pydantic>=2.7
+pydantic-settings>=2.4
+python-dotenv>=1.0
+PyYAML>=6.0
+tenacity>=8.0
+
+# ---- Tests ----
+pytest>=8.0

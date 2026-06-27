@@ -1,0 +1,307 @@
+# Meridian assistant evaluation set.
+# Seeded from the 20 example messages (file 13) and extended to ~34 cases covering FAQ/policy
+# retrieval, service-area eligibility, booking actions, and human-handoff routing.
+#
+# Per-case fields:
+#   id, channel, intent           - identifiers / gold intent label
+#   query | turns                 - single message, or a multi-turn conversation
+#   retrieval_query               - optional override used only for retrieval metrics
+#   expected_sources              - gold source file(s); set for RAG-answered (faq) cases
+#   reference                     - gold short answer (RAGAS context_recall + LLM judge)
+#   answer_contains/answer_excludes - substring assertions (case-insensitive)
+#   expect_handoff, expected_route
+#   expected_action               - {tool, status} for booking actions
+#   expect_confirmation           - assistant must ask to confirm before committing
+
+cases:
+  # ---------------------- FAQ / policy / pricing (RAG) ----------------------
+  - id: hours_herndon_sat
+    channel: ivr
+    intent: faq_policy
+    query: "Hi, what time do you open on Saturdays? I need the Herndon branch specifically."
+    expected_sources: ["08_branch_hours.pdf"]
+    reference: "The Herndon branch is open 8 am to 2 pm on Saturdays."
+    answer_contains: ["Herndon", "8 am", "2 pm"]
+    expect_handoff: false
+
+  - id: pricing_water_heater
+    channel: email
+    intent: faq_policy
+    query: "Roughly how much to replace a 40-gallon water heater? Just a ballpark."
+    expected_sources: ["04_plumbing_pricing.pdf"]
+    reference: "A 40-gallon water heater replacement is $950 to $1,400; tankless requires a quote."
+    answer_contains: ["950", "1,400"]
+    expect_handoff: false
+
+  - id: maintenance_plans
+    channel: ivr
+    intent: faq_policy
+    query: "What's the difference between the Gold and Platinum HVAC plans?"
+    expected_sources: ["03_hvac_pricing.pdf"]
+    reference: "Gold is $249/yr (2 tune-ups, 15% off, priority); Platinum is $399/yr (unlimited tune-ups, 20% off, same-day, free T1 repairs)."
+    answer_contains: ["Gold", "Platinum", "249", "399"]
+    expect_handoff: false
+
+  - id: payments_zelle
+    channel: ivr
+    intent: faq_policy
+    query: "Do you take Zelle? I don't have my credit card with me."
+    expected_sources: ["10_faq_payments.pdf"]
+    reference: "Zelle is accepted for residential customers up to $500."
+    answer_contains: ["Zelle", "500"]
+    expect_handoff: false
+
+  - id: after_hours_sunday
+    channel: ivr
+    intent: faq_policy
+    query: "If I book for Sunday, is there an extra charge?"
+    expected_sources: ["03_hvac_pricing.pdf"]
+    reference: "There is a $125 surcharge on Sundays and federal holidays."
+    answer_contains: ["125"]
+    expect_handoff: false
+
+  - id: cancellation_fee_window
+    channel: web_chat
+    intent: faq_policy
+    query: "What's the fee if I cancel about 5 hours before my appointment?"
+    expected_sources: ["07_cancellation_policy.pdf"]
+    reference: "Cancelling 2 to 24 hours before is a $35 late-cancel fee."
+    answer_contains: ["35"]
+    expect_handoff: false
+
+  - id: estimate_panel_upgrade
+    channel: ivr
+    intent: faq_policy
+    query: "Price to upgrade my breaker panel from 100A to 200A?"
+    expected_sources: ["05_electrical_pricing.pdf"]
+    reference: "A full panel upgrade from 100A to 200A is $1,800 to $3,500; a written estimate is provided on-site."
+    answer_contains: ["1,800", "3,500"]
+    expect_handoff: false
+
+  - id: preferred_tech_policy
+    channel: ivr
+    intent: faq_policy
+    query: "Marcus Webb did a great job last time - can I request him next visit?"
+    expected_sources: ["09_faq_booking.pdf"]
+    reference: "Yes, you can request a preferred technician, but availability is not guaranteed."
+    answer_contains: ["not guaranteed"]
+    expect_handoff: false
+
+  - id: booking_advance_window
+    channel: web_chat
+    intent: faq_policy
+    query: "How far in advance can I book an appointment?"
+    expected_sources: ["09_faq_booking.pdf"]
+    reference: "You can book up to 60 days in advance."
+    answer_contains: ["60 days"]
+    expect_handoff: false
+
+  - id: financing_available
+    channel: email
+    intent: faq_policy
+    query: "Do you offer financing for a big job?"
+    expected_sources: ["10_faq_payments.pdf"]
+    reference: "Financing is available via GreenSky for jobs over $1,000, 0% for 12 months with approved credit."
+    answer_contains: ["GreenSky"]
+    expect_handoff: false
+
+  - id: warranty_labor
+    channel: phone
+    intent: faq_policy
+    query: "Your tech fixed our faucet two weeks ago but it's dripping again - is this covered?"
+    expected_sources: ["06_warranty_terms.pdf"]
+    reference: "All labor carries a 90-day warranty from the date of service at no charge to return."
+    answer_contains: ["90-day"]
+    expect_handoff: false
+
+  - id: warranty_exclusions
+    channel: email
+    intent: faq_policy
+    query: "Does the warranty cover flood damage?"
+    expected_sources: ["06_warranty_terms.pdf"]
+    reference: "Damage from flooding (and misuse, fire, freeze, acts of God) is excluded."
+    answer_contains: ["flood"]
+    expect_handoff: false
+
+  - id: emergency_definition
+    channel: web_chat
+    intent: faq_policy
+    query: "What kinds of issues count as an emergency for you?"
+    expected_sources: ["11_faq_emergencies.pdf"]
+    reference: "Active water leak/flooding, no heat below 40F, no cooling above 95F, electrical hazard, or sewage backup."
+    answer_contains: ["leak"]
+    expect_handoff: false
+
+  - id: ev_charger_price
+    channel: email
+    intent: faq_policy
+    query: "How much to install a Level 2 EV charger?"
+    expected_sources: ["05_electrical_pricing.pdf"]
+    reference: "A Level 2 NEMA 14-50 EV charger install is $450 to $900."
+    answer_contains: ["450", "900"]
+    expect_handoff: false
+
+  - id: drain_clearing_price
+    channel: ivr
+    intent: faq_policy
+    query: "Ballpark for a standard drain clearing?"
+    expected_sources: ["04_plumbing_pricing.pdf"]
+    reference: "Standard drain clearing is $120 to $200."
+    answer_contains: ["120", "200"]
+    expect_handoff: false
+
+  - id: contact_center_sunday
+    channel: ivr
+    intent: faq_policy
+    query: "Is your contact center open on Sundays?"
+    expected_sources: ["08_branch_hours.pdf"]
+    reference: "The contact center is closed on Sundays (emergency line only)."
+    answer_contains: ["Sunday"]
+    expect_handoff: false
+
+  # ---------------------- Service-area eligibility (tool) ----------------------
+  - id: sa_loudoun_plumbing
+    channel: ivr
+    intent: service_area
+    query: "I'm at ZIP 20147 - do you service this area for plumbing?"
+    reference: "20147 is Loudoun; plumbing is sub-contracted with no same-day service."
+    answer_contains: ["sub-contract"]
+    expect_handoff: false
+
+  - id: sa_fairfax_hvac
+    channel: web_chat
+    intent: service_area
+    query: "Do you cover ZIP 22030 for HVAC?"
+    answer_contains: ["22030"]
+    answer_excludes: ["not in our", "spot-approval"]
+    expect_handoff: false
+
+  - id: sa_pg_electrical
+    channel: email
+    intent: service_area
+    query: "Do you do electrical work in ZIP 20706?"
+    reference: "20706 is Prince George's; electrical is not yet licensed - refer to EcoPower."
+    answer_contains: ["EcoPower"]
+    expect_handoff: false
+
+  - id: sa_out_of_area
+    channel: email
+    intent: service_area
+    query: "Do you service Manassas, ZIP 20110? I need an electrician."
+    answer_contains: ["spot-approval"]
+    expect_handoff: true
+    expected_route: "Branch Manager"
+
+  # ---------------------- Booking actions (agentic) ----------------------
+  - id: booking_create_rockville
+    channel: email
+    intent: booking_create
+    turns:
+      - "I'd like to book an electrical panel inspection in Rockville 20814 next Tuesday morning."
+      - "My name is Jordan Diaz, phone 240-555-0101."
+      - "yes"
+    expect_confirmation: true
+    expected_action: {tool: create_booking, status: confirmed}
+    expect_handoff: false
+
+  - id: booking_create_missing_info
+    channel: web_chat
+    intent: booking_create
+    query: "I'd like to book a plumber."
+    answer_contains: ["ZIP"]
+    expect_confirmation: false
+    expect_handoff: false
+
+  - id: booking_create_22046_discrepancy
+    channel: email
+    intent: booking_create
+    turns:
+      - "Schedule an HVAC tune-up in Falls Church 22046 on 2026-07-08 morning. I'm Sam Reed, 703-555-0144."
+    expect_handoff: true
+    expected_route: "Branch Manager"
+
+  - id: status_check
+    channel: ivr
+    intent: booking_status
+    query: "I have an appointment, booking BK-00391042. What's the window and who's coming?"
+    expected_action: {tool: get_booking, status: confirmed}
+    answer_contains: ["Dana Cole"]
+    expect_handoff: false
+
+  - id: tech_eta
+    channel: ivr
+    intent: booking_status
+    query: "My window was 10-12 and it's 11:45 - has my tech left yet? Booking BK-00512883."
+    expected_action: {tool: get_booking, status: en_route}
+    answer_contains: ["way"]
+    expect_handoff: false
+
+  - id: reschedule_far
+    channel: ivr
+    intent: booking_reschedule
+    turns:
+      - "I need to move booking BK-00483921 to 2026-07-22 in the afternoon."
+      - "yes"
+    expect_confirmation: true
+    expected_action: {tool: reschedule, status: rescheduled}
+    expect_handoff: false
+
+  - id: cancel_booking
+    channel: phone
+    intent: booking_cancel
+    turns:
+      - "Please cancel my booking BK-00400000."
+      - "yes"
+    expect_confirmation: true
+    expected_action: {tool: cancel, status: cancelled}
+    expect_handoff: false
+
+  # ---------------------- Human handoff (sensitive / out-of-scope) ----------------------
+  - id: emergency_leak
+    channel: ivr
+    intent: out_of_scope
+    query: "Water is pouring out from under my sink right now! I need someone immediately!"
+    answer_contains: ["1-800-555-0190"]
+    expect_handoff: true
+    expected_route: "Emergency"
+
+  - id: fee_dispute
+    channel: ivr
+    intent: out_of_scope
+    query: "I got charged $75 for a no-show but I called to cancel! I want that waived."
+    expect_handoff: true
+    expected_route: "Branch Manager"
+
+  - id: complaint
+    channel: email
+    intent: out_of_scope
+    query: "The technician left a huge mess in my garage. I want to speak to a manager."
+    expect_handoff: true
+    expected_route: "Branch Manager"
+
+  - id: commercial
+    channel: email
+    intent: out_of_scope
+    query: "We manage 12 units and want net-30 invoicing and a volume discount. Who do I talk to?"
+    expect_handoff: true
+    expected_route: "Sales"
+
+  - id: out_of_scope_weather
+    channel: web_chat
+    intent: out_of_scope
+    query: "What's the weather forecast for tomorrow?"
+    expect_handoff: true
+
+  - id: out_of_scope_jobs
+    channel: email
+    intent: out_of_scope
+    query: "Are you hiring HVAC technicians right now? What's the salary?"
+    expect_handoff: true
+
+  # ---------------------- Smalltalk ----------------------
+  - id: smalltalk_greeting
+    channel: web_chat
+    intent: smalltalk
+    query: "Hi there!"
+    answer_contains: ["help"]
+    expect_handoff: false

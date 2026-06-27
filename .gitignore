@@ -1,0 +1,19 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Secrets
+.env
+
+# Local vector store / build artifacts
+data/
+
+# OS
+.DS_Store
+
+# Misc caches
+.ragas_cache/
+.cache/

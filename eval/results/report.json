@@ -1,0 +1,887 @@
+{
+  "summary": {
+    "total_cases": 34,
+    "retrieval": {
+      "n": 16,
+      "hit@1": 1.0,
+      "hit@3": 1.0,
+      "mrr": 1.0,
+      "recall@8": 1.0
+    },
+    "answer_keyword": [
+      25,
+      25
+    ],
+    "judge_correct": [
+      17,
+      18
+    ],
+    "judge_grounded": [
+      17,
+      18
+    ],
+    "handoff": [
+      34,
+      34
+    ],
+    "action": [
+      5,
+      5
+    ],
+    "confirmation_gate": [
+      3,
+      3
+    ],
+    "ragas": {
+      "status": "ok",
+      "n_samples": 16,
+      "scores": {
+        "faithfulness": 0.929,
+        "answer_relevancy": 0.752,
+        "llm_context_precision_with_reference": 0.984,
+        "context_recall": 0.969
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "hours_herndon_sat",
+      "intent": "faq_policy",
+      "answer": "The Herndon branch is open on Saturdays from 8 am to 2 pm.",
+      "retrieval": {
+        "expected": [
+          "08_branch_hours.pdf"
+        ],
+        "ranked": [
+          "08_branch_hours.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Branch Hours & Contact Directory > Herndon hours]\nHerndon branch hours and region: North | 8 am \u2013 5 pm | 8 am \u2013 2 pm | Closed. Columns are Region, Mon-Fri, Saturday, Sunday.",
+          "[Branch Hours & Contact Directory > Contact Center Hours]\nContact Center Hours\nMonday\u2013Friday 7:00 am \u2013 7:00 pm\nSaturday 8:00 am \u2013 5:00 pm",
+          "[Branch Hours & Contact Directory > Tysons hours]\nTysons branch hours and region: North | 7 am \u2013 6 pm | 8 am \u2013 4 pm | Closed. Columns are Region, Mon-Fri, Saturday, Sunday.",
+          "[Branch Hours & Contact Directory > Falls Church hours]\nFalls Church branch hours and region: North | 7 am \u2013 6 pm | 8 am \u2013 4 pm | Emergency. Columns are Region, Mon-Fri, Saturday, Sunday."
+        ],
+        "top_score": 0.824
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer accurately provides the Saturday opening hours for the Herndon branch, matching the reference exactly. There is no contradiction or fabrication."
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "pricing_water_heater",
+      "intent": "faq_policy",
+      "answer": "The ballpark cost to replace a 40-gallon water heater is between $950 and $1,400.",
+      "retrieval": {
+        "expected": [
+          "04_plumbing_pricing.pdf"
+        ],
+        "ranked": [
+          "04_plumbing_pricing.pdf",
+          "03_hvac_pricing.pdf",
+          "05_electrical_pricing.pdf",
+          "06_warranty_terms.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Plumbing Pricing Bands > Common Services]\nCommon Services\nService Price Range Notes\nDrain clearing (standard) $120 \u2013 $200 Hydro-jet add $95\nFaucet / fixture replacement $150 \u2013 $350 Parts extra if customer-supplied excluded\nToilet repair / replace $175 \u2013 $450 Parts included for standard models\nWater heater replacement (40 gal) $950 \u2013 $1,400 Tankless: quote required\nSlab/pipe leak detection $300 \u2013 $500 Camera inspection extra $150\nMain shutoff / PRV replacement $400 \u2013 $750 Permit may be required",
+          "[HVAC Pricing Bands]\nHVAC Pricing Bands\nBallpark pricing for diagnostics, repairs, and maintenance plans. All prices in USD.",
+          "[Plumbing Pricing Bands > Emergency Plumbing (Active Water Leak)]\nEmergency Plumbing (Active Water Leak)\nFlat $99 emergency dispatch fee. After-hours surcharges same as HVAC policy.",
+          "[HVAC Pricing Bands > Repair Tiers]\nRepair Tiers\nTier Description Price Range\nT1 Minor (filter swap, thermostat calibration, capacitor) $95 \u2013 $250\nT2 Moderate (fan motor, contactor, refrigerant top-up \u00a32 lb) $250 \u2013 $650\nT3 Major (compressor, coil, refrigerant >2 lb, ductwork section) $650 \u2013 $2,400\nT4 Full system replacement \u2014 refer to Sales for quoted scope Quote required"
+        ],
+        "top_score": 0.465
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer gives the same price range as the reference for replacing a 40-gallon water heater. It is accurate, consistent, and does not contradict or fabricate information."
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "maintenance_plans",
+      "intent": "faq_policy",
+      "answer": "The Gold HVAC plan costs $249 per year and includes 2 tune-ups, a 15% repair discount, priority scheduling, and a 1-year labor warranty on repairs, but does not cover T1 repairs. The Platinum plan costs $399 per year and offers unlimited tune-ups, a 20% discount, same-day priority scheduling, a 1-year labor warranty, and covers T1 repairs at no charge. Additionally, Platinum members receive faster emergency response (2 hours or less) compared to Gold (3 hours or less).",
+      "retrieval": {
+        "expected": [
+          "03_hvac_pricing.pdf"
+        ],
+        "ranked": [
+          "03_hvac_pricing.pdf",
+          "06_warranty_terms.pdf",
+          "11_faq_emergencies.pdf",
+          "04_plumbing_pricing.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[HVAC Pricing Bands > Maintenance Plans]\nMaintenance Plans\nPlan Annual Fee Includes\nSilver $149 / yr 1\u00d7 tune-up, 10% repair discount\nGold $249 / yr 2\u00d7 tune-ups, 15% repair discount, priority scheduling\nPlatinum $399 / yr Unlimited tune-ups, 20% discount, same-day priority, free T1 repairs",
+          "[Warranty & Guarantee Terms > Maintenance Plan Members]\nMaintenance Plan Members\nPlan Labor Warranty Extension T1 Repairs\nSilver Standard 90 days Not covered\nGold Extended to 1 year on all repairs Not covered\nPlatinum Extended to 1 year on all repairs Covered at no charge",
+          "[HVAC Pricing Bands]\nHVAC Pricing Bands\nBallpark pricing for diagnostics, repairs, and maintenance plans. All prices in USD.",
+          "[HVAC Pricing Bands > Repair Tiers]\nRepair Tiers\nTier Description Price Range\nT1 Minor (filter swap, thermostat calibration, capacitor) $95 \u2013 $250\nT2 Moderate (fan motor, contactor, refrigerant top-up \u00a32 lb) $250 \u2013 $650\nT3 Major (compressor, coil, refrigerant >2 lb, ductwork section) $650 \u2013 $2,400\nT4 Full system replacement \u2014 refer to Sales for quoted scope Quote required"
+        ],
+        "top_score": 0.441
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer accurately describes the main differences between the Gold and Platinum HVAC plans as outlined in the reference, including price, number of tune-ups, discount percentage, priori"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "payments_zelle",
+      "intent": "faq_policy",
+      "answer": "Yes, Zelle is accepted as a payment method for residential customers, up to $500.",
+      "retrieval": {
+        "expected": [
+          "10_faq_payments.pdf"
+        ],
+        "ranked": [
+          "10_faq_payments.pdf",
+          "01_service_area_north.pdf",
+          "08_branch_hours.pdf",
+          "07_cancellation_policy.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[FAQ \u2014 Payments & Invoicing > What payment methods do you accept?]\nWhat payment methods do you accept?\nVisa, Mastercard, Amex, Discover \u00b7 Apple Pay / Google Pay \u00b7 Personal check (residential) or business check (commercial) \u00b7 Zelle (residential customers only, up to $500) \u00b7 Cash (discouraged \u2014 technician may not carry change).",
+          "[FAQ \u2014 Payments & Invoicing > Is financing available?]\nIs financing available?\nYes \u2014 for jobs over $1,000 via GreenSky. 0% for 12 months with approved credit. Apply online or on-site with the technician.",
+          "[FAQ \u2014 Payments & Invoicing > When do I pay?]\nWhen do I pay?\nPayment is due at completion of service. The technician processes payment on-site via card, tap-to-pay, or check. Net-30 invoicing is available for commercial accounts only.",
+          "[FAQ \u2014 Payments & Invoicing > Can I get an estimate before the visit?]\nCan I get an estimate before the visit?\nPhone estimates are ballpark only, based on pricing bands. Written estimates are provided on-site after the diagnostic. Customer must approve before work begins."
+        ],
+        "top_score": 0.257
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer accurately states that Zelle is accepted for residential customers up to $500, which matches the reference. There are no contradictions or fabrications."
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "after_hours_sunday",
+      "intent": "faq_policy",
+      "answer": "Yes, there is an extra charge for booking on Sunday. The after-hours surcharge is $125 on Sundays and federal holidays.",
+      "retrieval": {
+        "expected": [
+          "03_hvac_pricing.pdf"
+        ],
+        "ranked": [
+          "03_hvac_pricing.pdf",
+          "09_faq_booking.pdf",
+          "07_cancellation_policy.pdf",
+          "11_faq_emergencies.pdf",
+          "04_plumbing_pricing.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[HVAC Pricing Bands > After-Hours Surcharge]\nAfter-Hours Surcharge\n+$75 for calls before 7 am or after 6 pm Monday\u2013Saturday.\n+$125 on Sundays and federal holidays.",
+          "[FAQ \u2014 Booking & Scheduling > How far in advance can I book?]\nHow far in advance can I book?\nUp to 60 days. Same-day slots are available before 11 am for Gold and Platinum members, or before 9 am for standard customers.",
+          "[Cancellation & Rescheduling Policy > Standard Cancellation Fees]\nStandard Cancellation Fees\nNotice Given Fee\nMore than 24 hours before appointment No fee\n2 to 24 hours before appointment $35 late-cancel fee\nLess than 2 hours or no-show $75 no-show fee (waived once per 12-month period per customer)",
+          "[FAQ \u2014 Emergencies & After-Hours > After-Hours Surcharges]\nAfter-Hours Surcharges\nSee the HVAC and Plumbing pricing documents for full surcharge details. Emergency dispatch fees ($99 plumbing,\n$89 HVAC) are not waived for after-hours calls."
+        ],
+        "top_score": 0.187
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant correctly states that there is an extra charge for booking on Sunday and specifies the $125 surcharge, which matches the reference. The mention of 'after-hours surcharge' does not contra"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "cancellation_fee_window",
+      "intent": "faq_policy",
+      "answer": "If you cancel your appointment 5 hours before the scheduled time, there is a $35 late-cancel fee.",
+      "retrieval": {
+        "expected": [
+          "07_cancellation_policy.pdf"
+        ],
+        "ranked": [
+          "07_cancellation_policy.pdf",
+          "09_faq_booking.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Cancellation & Rescheduling Policy > Standard Cancellation Fees]\nStandard Cancellation Fees\nNotice Given Fee\nMore than 24 hours before appointment No fee\n2 to 24 hours before appointment $35 late-cancel fee\nLess than 2 hours or no-show $75 no-show fee (waived once per 12-month period per customer)",
+          "[Cancellation & Rescheduling Policy > Meridian-Initiated Cancellations]\nMeridian-Initiated Cancellations\nIf Meridian cancels with less than 4 hours notice, customer receives a $25 credit toward their next booking.\nWeather-related cancellations: no fee to customer; re-book at no charge.",
+          "[Cancellation & Rescheduling Policy]\nCancellation & Rescheduling Policy\nFee schedule for customer cancellations, no-shows, and Meridian-initiated changes.",
+          "[Cancellation & Rescheduling Policy > Rescheduling]\nRescheduling\nMore than 24 hours notice: free, unlimited reschedules.\nSame-day reschedule: treated as a late-cancel if the new slot is not the same day."
+        ],
+        "top_score": 0.85
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant correctly states that cancelling 5 hours before the appointment incurs a $35 late-cancel fee, which matches the reference information. There are no contradictions or fabricated details."
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "estimate_panel_upgrade",
+      "intent": "faq_policy",
+      "answer": "The price to upgrade a breaker panel from 100A to 200A ranges from $1,800 to $3,500, labor only.",
+      "retrieval": {
+        "expected": [
+          "05_electrical_pricing.pdf"
+        ],
+        "ranked": [
+          "05_electrical_pricing.pdf",
+          "04_plumbing_pricing.pdf",
+          "03_hvac_pricing.pdf",
+          "06_warranty_terms.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Electrical Pricing Bands > Common Services]\nCommon Services\nService Price Range\nOutlet / switch replacement $95 \u2013 $175\nGFCI / AFCI installation (per outlet) $120 \u2013 $200\nCeiling fan install (fixture supplied by customer) $150 \u2013 $250\nPanel inspection + report $175 \u2013 $300\nCircuit breaker replacement $200 \u2013 $400\nSub-panel installation $800 \u2013 $1,800\nFull panel upgrade (100A to 200A) $1,800 \u2013 $3,500\nEV charger \u2014 Level 2, NEMA 14-50 $450 \u2013 $900",
+          "[Electrical Pricing Bands]\nElectrical Pricing Bands\nCommon electrical services. All prices in USD, labor only unless noted.",
+          "[Plumbing Pricing Bands > Common Services]\nCommon Services\nService Price Range Notes\nDrain clearing (standard) $120 \u2013 $200 Hydro-jet add $95\nFaucet / fixture replacement $150 \u2013 $350 Parts extra if customer-supplied excluded\nToilet repair / replace $175 \u2013 $450 Parts included for standard models\nWater heater replacement (40 gal) $950 \u2013 $1,400 Tankless: quote required\nSlab/pipe leak detection $300 \u2013 $500 Camera inspection extra $150\nMain shutoff / PRV replacement $400 \u2013 $750 Permit may be required",
+          "[Electrical Pricing Bands > Service Call Fee]\nService Call Fee\n$85 flat \u2014 waived when repair total exceeds $300."
+        ],
+        "top_score": 0.771
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 0,
+        "grounded": 0,
+        "reason": "The answer gives the correct price range, but incorrectly specifies 'labor only,' which is not stated in the reference. The reference implies the price is for the full upgrade, not just labor. This is"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "preferred_tech_policy",
+      "intent": "faq_policy",
+      "answer": "Yes, you can request a specific technician by using the preferred_tech field when booking. Please note that availability is not guaranteed, and you will be notified if your preferred technician is unavailable.",
+      "retrieval": {
+        "expected": [
+          "09_faq_booking.pdf"
+        ],
+        "ranked": [
+          "09_faq_booking.pdf",
+          "11_faq_emergencies.pdf",
+          "10_faq_payments.pdf",
+          "02_service_area_central.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[FAQ \u2014 Booking & Scheduling > Can I request a specific technician?]\nCan I request a specific technician?\nYes \u2014 use the preferred_tech field when booking. Availability is not guaranteed; the system will notify the customer if the preferred tech is unavailable.",
+          "[FAQ \u2014 Emergencies & After-Hours > How to Request Emergency Service]\nHow to Request Emergency Service\nCall 1-800-555-0190 (24/7). Do NOT use the web booking portal for emergencies \u2014 response is not guaranteed\nthrough that channel.",
+          "[FAQ \u2014 Booking & Scheduling > What is the appointment window?]\nWhat is the appointment window?\nAll appointments use 2-hour windows (e.g., 10 am \u2013 12 pm). The technician sends an ETA when en route.",
+          "[FAQ \u2014 Booking & Scheduling > How long does a typical visit take?]\nHow long does a typical visit take?\nService Type Typical Duration HVAC tune-up 60 \u2013 90 min HVAC diagnostic 45 \u2013 60 min Plumbing service call 60 \u2013 120 min Electrical inspection 60 \u2013 90 min Full system install 4 \u2013 8 hours"
+        ],
+        "top_score": 0.201
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer correctly states that a specific technician can be requested and that availability is not guaranteed, which matches the reference. The mention of the 'preferred_tech field' is a"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "booking_advance_window",
+      "intent": "faq_policy",
+      "answer": "You can book an appointment up to 60 days in advance. Same-day slots are also available before 11 am for Gold and Platinum members, or before 9 am for standard customers.",
+      "retrieval": {
+        "expected": [
+          "09_faq_booking.pdf"
+        ],
+        "ranked": [
+          "09_faq_booking.pdf",
+          "07_cancellation_policy.pdf",
+          "11_faq_emergencies.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[FAQ \u2014 Booking & Scheduling > How far in advance can I book?]\nHow far in advance can I book?\nUp to 60 days. Same-day slots are available before 11 am for Gold and Platinum members, or before 9 am for standard customers.",
+          "[FAQ \u2014 Booking & Scheduling > What is the appointment window?]\nWhat is the appointment window?\nAll appointments use 2-hour windows (e.g., 10 am \u2013 12 pm). The technician sends an ETA when en route.",
+          "[FAQ \u2014 Booking & Scheduling > Will I get a reminder?]\nWill I get a reminder?\nYes \u2014 automated SMS and email reminders are sent 24 hours before the appointment and 30 minutes before the technician departs.",
+          "[Cancellation & Rescheduling Policy > Standard Cancellation Fees]\nStandard Cancellation Fees\nNotice Given Fee\nMore than 24 hours before appointment No fee\n2 to 24 hours before appointment $35 late-cancel fee\nLess than 2 hours or no-show $75 no-show fee (waived once per 12-month period per customer)"
+        ],
+        "top_score": 0.848
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer correctly states that appointments can be booked up to 60 days in advance, matching the reference. The additional information about same-day slots for different membership level"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "financing_available",
+      "intent": "faq_policy",
+      "answer": "Yes, financing is available for jobs over $1,000 through GreenSky, offering 0% for 12 months with approved credit. You can apply online or on-site with the technician.",
+      "retrieval": {
+        "expected": [
+          "10_faq_payments.pdf"
+        ],
+        "ranked": [
+          "10_faq_payments.pdf",
+          "09_faq_booking.pdf",
+          "04_plumbing_pricing.pdf",
+          "01_service_area_north.pdf",
+          "05_electrical_pricing.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[FAQ \u2014 Payments & Invoicing > Is financing available?]\nIs financing available?\nYes \u2014 for jobs over $1,000 via GreenSky. 0% for 12 months with approved credit. Apply online or on-site with the technician.",
+          "[FAQ \u2014 Payments & Invoicing > What payment methods do you accept?]\nWhat payment methods do you accept?\nVisa, Mastercard, Amex, Discover \u00b7 Apple Pay / Google Pay \u00b7 Personal check (residential) or business check (commercial) \u00b7 Zelle (residential customers only, up to $500) \u00b7 Cash (discouraged \u2014 technician may not carry change).",
+          "[FAQ \u2014 Payments & Invoicing > When do I pay?]\nWhen do I pay?\nPayment is due at completion of service. The technician processes payment on-site via card, tap-to-pay, or check. Net-30 invoicing is available for commercial accounts only.",
+          "[FAQ \u2014 Payments & Invoicing > Can I get an estimate before the visit?]\nCan I get an estimate before the visit?\nPhone estimates are ballpark only, based on pricing bands. Written estimates are provided on-site after the diagnostic. Customer must approve before work begins."
+        ],
+        "top_score": 0.567
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer accurately reflects the reference by stating that financing is available for jobs over $1,000 through GreenSky with 0% for 12 months with approved credit. The additional detail "
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "warranty_labor",
+      "intent": "faq_policy",
+      "answer": "Yes, a faucet repair from two weeks ago is covered under the standard 90-day labor warranty, so there would be no charge to return for service related to that repair.",
+      "retrieval": {
+        "expected": [
+          "06_warranty_terms.pdf"
+        ],
+        "ranked": [
+          "06_warranty_terms.pdf",
+          "04_plumbing_pricing.pdf",
+          "09_faq_booking.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Warranty & Guarantee Terms > Labor Warranty]\nLabor Warranty\nAll labor: 90-day warranty from date of service, no charge to return.\nMajor installs (water heater, furnace, AC unit, panel upgrade): 1-year labor warranty.",
+          "[Plumbing Pricing Bands > Service Call Fee]\nService Call Fee\n$75 flat \u2014 applied toward any repair over $200 booked on the same visit.",
+          "[Warranty & Guarantee Terms > Maintenance Plan Members]\nMaintenance Plan Members\nPlan Labor Warranty Extension T1 Repairs\nSilver Standard 90 days Not covered\nGold Extended to 1 year on all repairs Not covered\nPlatinum Extended to 1 year on all repairs Covered at no charge",
+          "[Plumbing Pricing Bands > Emergency Plumbing (Active Water Leak)]\nEmergency Plumbing (Active Water Leak)\nFlat $99 emergency dispatch fee. After-hours surcharges same as HVAC policy."
+        ],
+        "top_score": 0.179
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant correctly states that the faucet repair from two weeks ago is covered under a 90-day labor warranty, matching the reference information. There are no contradictions or fabrications."
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "warranty_exclusions",
+      "intent": "faq_policy",
+      "answer": "No, the warranty does not cover damage from flooding.",
+      "retrieval": {
+        "expected": [
+          "06_warranty_terms.pdf"
+        ],
+        "ranked": [
+          "06_warranty_terms.pdf",
+          "11_faq_emergencies.pdf",
+          "04_plumbing_pricing.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Warranty & Guarantee Terms > Exclusions]\nExclusions\nDamage from misuse, flooding, fire, freeze, or acts of God.\nPest-related damage.\nIssues arising from customer alterations made after service.",
+          "[Warranty & Guarantee Terms]\nWarranty & Guarantee Terms\nLabor and parts warranties for residential and commercial customers.",
+          "[Warranty & Guarantee Terms > Maintenance Plan Members]\nMaintenance Plan Members\nPlan Labor Warranty Extension T1 Repairs\nSilver Standard 90 days Not covered\nGold Extended to 1 year on all repairs Not covered\nPlatinum Extended to 1 year on all repairs Covered at no charge",
+          "[Warranty & Guarantee Terms > Labor Warranty]\nLabor Warranty\nAll labor: 90-day warranty from date of service, no charge to return.\nMajor installs (water heater, furnace, AC unit, panel upgrade): 1-year labor warranty."
+        ],
+        "top_score": 0.761
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant correctly states that the warranty does not cover flood damage, which is consistent with the reference. There are no contradictions or fabricated details."
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "emergency_definition",
+      "intent": "faq_policy",
+      "answer": "Meridian Home Services considers the following issues as emergencies: active water leak or flooding, no heat when the outdoor temperature is forecast below 40\u00b0F, no cooling when the indoor temperature exceeds 95\u00b0F, electrical hazards such as burning smell, sparking, or partial power loss, and sewage backup.",
+      "retrieval": {
+        "expected": [
+          "11_faq_emergencies.pdf"
+        ],
+        "ranked": [
+          "11_faq_emergencies.pdf",
+          "08_branch_hours.pdf",
+          "04_plumbing_pricing.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[FAQ \u2014 Emergencies & After-Hours > What Counts as an Emergency?]\nWhat Counts as an Emergency?\nActive water leak or flooding\nNo heat when outdoor temperature is forecast below 40\u00b0F\nNo cooling when indoor temperature exceeds 95\u00b0F\nElectrical hazard: burning smell, sparking, or partial power loss\nSewage backup",
+          "[FAQ \u2014 Emergencies & After-Hours]\nFAQ \u2014 Emergencies & After-Hours\nWhat qualifies as an emergency, how to request urgent service, and SLA targets.",
+          "[FAQ \u2014 Emergencies & After-Hours > How to Request Emergency Service]\nHow to Request Emergency Service\nCall 1-800-555-0190 (24/7). Do NOT use the web booking portal for emergencies \u2014 response is not guaranteed\nthrough that channel.",
+          "[Branch Hours & Contact Directory > 24/7 Emergency Line]\n24/7 Emergency Line\n1-800-555-0190 \u2014 Active water leaks, no heat below 40\u00b0F, no cooling above 95\u00b0F, electrical hazards."
+        ],
+        "top_score": 0.795
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer accurately lists all the emergency issues from the reference (active water leak/flooding, no heat below 40\u00b0F, no cooling above 95\u00b0F, electrical hazard, sewage backup). The addit"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "ev_charger_price",
+      "intent": "faq_policy",
+      "answer": "The cost to install a Level 2 EV charger (NEMA 14-50) ranges from $450 to $900 for labor only.",
+      "retrieval": {
+        "expected": [
+          "05_electrical_pricing.pdf"
+        ],
+        "ranked": [
+          "05_electrical_pricing.pdf",
+          "03_hvac_pricing.pdf",
+          "04_plumbing_pricing.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Electrical Pricing Bands > Common Services]\nCommon Services\nService Price Range\nOutlet / switch replacement $95 \u2013 $175\nGFCI / AFCI installation (per outlet) $120 \u2013 $200\nCeiling fan install (fixture supplied by customer) $150 \u2013 $250\nPanel inspection + report $175 \u2013 $300\nCircuit breaker replacement $200 \u2013 $400\nSub-panel installation $800 \u2013 $1,800\nFull panel upgrade (100A to 200A) $1,800 \u2013 $3,500\nEV charger \u2014 Level 2, NEMA 14-50 $450 \u2013 $900",
+          "[Electrical Pricing Bands]\nElectrical Pricing Bands\nCommon electrical services. All prices in USD, labor only unless noted.",
+          "[HVAC Pricing Bands > Repair Tiers]\nRepair Tiers\nTier Description Price Range\nT1 Minor (filter swap, thermostat calibration, capacitor) $95 \u2013 $250\nT2 Moderate (fan motor, contactor, refrigerant top-up \u00a32 lb) $250 \u2013 $650\nT3 Major (compressor, coil, refrigerant >2 lb, ductwork section) $650 \u2013 $2,400\nT4 Full system replacement \u2014 refer to Sales for quoted scope Quote required",
+          "[Electrical Pricing Bands > Service Call Fee]\nService Call Fee\n$85 flat \u2014 waived when repair total exceeds $300."
+        ],
+        "top_score": 0.751
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer provides the same price range as the reference for installing a Level 2 NEMA 14-50 EV charger. Specifying that the cost is for labor only is an acceptable clarification and does"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "drain_clearing_price",
+      "intent": "faq_policy",
+      "answer": "The ballpark cost for standard drain clearing is $120 to $200.",
+      "retrieval": {
+        "expected": [
+          "04_plumbing_pricing.pdf"
+        ],
+        "ranked": [
+          "04_plumbing_pricing.pdf",
+          "05_electrical_pricing.pdf",
+          "09_faq_booking.pdf",
+          "03_hvac_pricing.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Plumbing Pricing Bands > Common Services]\nCommon Services\nService Price Range Notes\nDrain clearing (standard) $120 \u2013 $200 Hydro-jet add $95\nFaucet / fixture replacement $150 \u2013 $350 Parts extra if customer-supplied excluded\nToilet repair / replace $175 \u2013 $450 Parts included for standard models\nWater heater replacement (40 gal) $950 \u2013 $1,400 Tankless: quote required\nSlab/pipe leak detection $300 \u2013 $500 Camera inspection extra $150\nMain shutoff / PRV replacement $400 \u2013 $750 Permit may be required",
+          "[Plumbing Pricing Bands]\nPlumbing Pricing Bands\nCommon plumbing services and emergency dispatch pricing.",
+          "[Plumbing Pricing Bands > Service Call Fee]\nService Call Fee\n$75 flat \u2014 applied toward any repair over $200 booked on the same visit.",
+          "[Plumbing Pricing Bands > Emergency Plumbing (Active Water Leak)]\nEmergency Plumbing (Active Water Leak)\nFlat $99 emergency dispatch fee. After-hours surcharges same as HVAC policy."
+        ],
+        "top_score": 0.397
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer matches the reference exactly, providing the same price range for standard drain clearing. There is no contradiction or fabrication."
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "contact_center_sunday",
+      "intent": "faq_policy",
+      "answer": "The Contact Center is closed on Sundays.",
+      "retrieval": {
+        "expected": [
+          "08_branch_hours.pdf"
+        ],
+        "ranked": [
+          "08_branch_hours.pdf"
+        ],
+        "hit@1": true,
+        "hit@3": true,
+        "mrr": 1.0,
+        "recall": 1.0,
+        "contexts": [
+          "[Branch Hours & Contact Directory > Contact Center Hours]\nContact Center Hours\nMonday\u2013Friday 7:00 am \u2013 7:00 pm\nSaturday 8:00 am \u2013 5:00 pm",
+          "[Branch Hours & Contact Directory > Columbia hours]\nColumbia branch hours and region: Central | 7 am \u2013 6 pm | 8 am \u2013 3 pm | Closed. Columns are Region, Mon-Fri, Saturday, Sunday.",
+          "[Branch Hours & Contact Directory > Laurel hours]\nLaurel branch hours and region: South | 8 am \u2013 5 pm | 8 am \u2013 2 pm | Closed. Columns are Region, Mon-Fri, Saturday, Sunday.",
+          "[Branch Hours & Contact Directory > Herndon hours]\nHerndon branch hours and region: North | 8 am \u2013 5 pm | 8 am \u2013 2 pm | Closed. Columns are Region, Mon-Fri, Saturday, Sunday."
+        ],
+        "top_score": 0.707
+      },
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer correctly states that the Contact Center is closed on Sundays, which matches the reference. While it omits the emergency line detail, it does not contradict the reference or fab"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "sa_loudoun_plumbing",
+      "intent": "service_area",
+      "answer": "We do cover plumbing in 20147 (Loudoun), but it's handled via a sub-contractor and same-day service isn't available. Same-day service is not available for Loudoun sub-contract work.",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant correctly states that plumbing in 20147 (Loudoun) is covered via a sub-contractor and that same-day service is not available, which matches the reference. No contradictory or fabricated "
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "sa_fairfax_hvac",
+      "intent": "service_area",
+      "answer": "Yes - we service 22030 (Fairfax, North region) for hvac.",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "sa_pg_electrical",
+      "intent": "service_area",
+      "answer": "I'm sorry - we don't currently offer electrical in 20706 (Prince George's). Prince George's County: electrical services not yet licensed. Refer customers to sister contractor EcoPower.",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": {
+        "correct": 1,
+        "grounded": 1,
+        "reason": "The assistant's answer correctly states that electrical work is not currently offered in 20706 (Prince George's), matches the licensing status, and refers to EcoPower as in the reference. No contradic"
+      },
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "sa_out_of_area",
+      "intent": "service_area",
+      "answer": "ZIP 20110 isn't in our standard service area on file, so it needs Branch Manager spot-approval. I can route your request to them - would you like that?",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "booking_create_rockville",
+      "intent": "booking_create",
+      "answer": "You're booked! Confirmation BK-58480812 - electrical diagnostic on 2026-06-23 from 07:00 to 11:00. Your technician is Tom Brennan. Assigned branch: Rockville. A confirmation has been sent.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": true,
+      "confirmation_ok": true,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "booking_create_missing_info",
+      "intent": "booking_create",
+      "answer": "To book that, I need the type of job (e.g. diagnostic, repair, install, tune-up, or estimate), the 5-digit ZIP code of the service address, your preferred date, a time window (morning, midday, or afternoon), your name, and a contact phone number.",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "booking_create_22046_discrepancy",
+      "intent": "booking_create",
+      "answer": "ZIP 22046 isn't in our service area on file, so a new booking there needs Branch Manager spot-approval. I'll route this to them with your details.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "status_check",
+      "intent": "booking_status",
+      "answer": "Booking BK-00391042 is confirmed. Your appointment is 2026-06-22 from 10:00 to 12:00 with Dana Cole.",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": true,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "tech_eta",
+      "intent": "booking_status",
+      "answer": "Your technician Sara Kim is on the way - about 15 minutes out. Your window is 2026-06-21 from 10:00 to 12:00.",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": true,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "reschedule_far",
+      "intent": "booking_reschedule",
+      "answer": "Done - BK-00483921 is rescheduled to 2026-07-22 (14:00-18:00). No fee applies.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": true,
+      "confirmation_ok": true,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "cancel_booking",
+      "intent": "booking_cancel",
+      "answer": "Your booking BK-00400000 is cancelled. No fee applies.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": true,
+      "confirmation_ok": true,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "emergency_leak",
+      "intent": "out_of_scope",
+      "answer": "This sounds like an emergency. Please call our 24/7 emergency line right now at 1-800-555-0190 so we can dispatch help immediately - please don't use online booking for emergencies.",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "fee_dispute",
+      "intent": "out_of_scope",
+      "answer": "I'm sorry for the trouble. Fee adjustments are handled by a Branch Manager, so I'm routing you to them now with all the details.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "complaint",
+      "intent": "out_of_scope",
+      "answer": "I'm really sorry about this experience. I'm escalating this to a Branch Manager who can help - I won't make any commitments on their behalf.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "commercial",
+      "intent": "out_of_scope",
+      "answer": "Commercial and multi-unit accounts are handled by our Sales team. I'll pass your details along so they can reach out to you.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "out_of_scope_weather",
+      "intent": "out_of_scope",
+      "answer": "I want to make sure you get an accurate answer, so I'm connecting you with a member of our team who can help.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "out_of_scope_jobs",
+      "intent": "out_of_scope",
+      "answer": "I want to make sure you get an accurate answer, so I'm connecting you with a member of our team who can help.",
+      "retrieval": null,
+      "keyword_ok": null,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    },
+    {
+      "id": "smalltalk_greeting",
+      "intent": "smalltalk",
+      "answer": "Hi! I'm the Meridian Home Services assistant. I can answer questions about hours, pricing, policies, and service areas, check appointment status, and book or reschedule visits. How can I help?",
+      "retrieval": null,
+      "keyword_ok": true,
+      "judge": null,
+      "handoff_ok": true,
+      "action_ok": null,
+      "confirmation_ok": null,
+      "notes": [],
+      "ragas_sample": null
+    }
+  ]
+}
